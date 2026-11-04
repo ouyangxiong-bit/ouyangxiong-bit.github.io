@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="个人档案主页：展示个人信息、技能、工作经历、教育背景与代表项目。">
+<title>张三 · 个人档案</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232255CE'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' fill='%23fff' text-anchor='middle' font-weight='bold'%3EZS%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#16202E;
+    --body:#3E4A5A;
+    --muted:#6B7684;
+    --accent:#2255CE;
+    --accent-soft:#EEF3FC;
+    --line:#E6EAF0;
+    --bg:#FFFFFF;
+    --bg-soft:#F7F8FA;
+    --radius:14px;
+    --shadow:0 6px 24px rgba(22,32,46,.06);
+    --maxw:1000px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    color:var(--body);
+    background:var(--bg);
+    line-height:1.7;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* ---------- 顶部导航 ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:700;color:var(--ink);letter-spacing:.2px}
+  .brand small{color:var(--muted);font-weight:500;margin-left:6px}
+  .nav-links{display:flex;gap:22px;list-style:none}
+  .nav-links a{color:var(--body);font-size:15px}
+  .nav-links a:hover{color:var(--accent);text-decoration:none}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 56px;border-bottom:1px solid var(--line)}
+  .hero-grid{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  .avatar{
+    width:96px;height:96px;border-radius:50%;
+    background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:34px;font-weight:700;flex:0 0 auto;
+  }
+  .hero-info{flex:1;min-width:260px}
+  .hero h1{font-size:34px;color:var(--ink);letter-spacing:.3px;line-height:1.2}
+  .hero .role{font-size:18px;color:var(--accent);margin-top:6px;font-weight:600}
+  .hero .tagline{margin-top:14px;max-width:620px}
+  .hero-actions{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:8px;font-weight:600;font-size:15px;
+    border:1px solid var(--accent);transition:.15s ease;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:#1b45a8;text-decoration:none}
+  .btn-ghost{background:#fff;color:var(--accent)}
+  .btn-ghost:hover{background:var(--accent-soft);text-decoration:none}
+  .btn svg{width:16px;height:16px}
+  .btn-primary svg{stroke:#fff}
+  .btn-ghost svg{stroke:var(--accent)}
+
+  /* ---------- 通用区块 ---------- */
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:28px}
+  .sec-head .num{color:var(--accent);font-weight:700;font-size:15px}
+  .sec-head h2{color:var(--ink);font-size:24px;letter-spacing:.3px}
+  .lead{max-width:720px}
+
+  /* ---------- 技能 ---------- */
+  .skills{display:grid;grid-template-columns:1fr;gap:14px}
+  .skill-row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+  .skill-row .name{color:var(--ink);font-weight:600;font-size:15px}
+  .bar{height:8px;border-radius:5px;background:var(--accent-soft);overflow:hidden}
+  .bar>span{display:block;height:100%;background:var(--accent);border-radius:5px}
+
+  /* ---------- 经历（时间轴） ---------- */
+  .timeline{position:relative;margin-left:12px;padding-left:24px;border-left:2px solid var(--line)}
+  .tl-item{position:relative;margin-bottom:26px}
+  .tl-item:last-child{margin-bottom:0}
+  .tl-item::before{
+    content:"";position:absolute;left:-31px;top:6px;width:10px;height:10px;border-radius:50%;
+    background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--accent-soft);
+  }
+  .tl-item h3{color:var(--ink);font-size:17px}
+  .tl-item .meta{color:var(--muted);font-size:14px;margin-top:2px}
+  .tl-item p{margin-top:8px;font-size:15px}
+
+  /* ---------- 教育 ---------- */
+  .edu{display:grid;gap:18px}
+  .edu-card{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .edu-card h3{color:var(--ink);font-size:16px}
+  .edu-card .meta{color:var(--muted);font-size:14px;margin-top:2px}
+
+  /* ---------- 项目 ---------- */
+  .projects{display:grid;grid-template-columns:1fr;gap:18px}
+  .proj-card{
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;transition:.15s ease;
+  }
+  .proj-card:hover{box-shadow:var(--shadow);border-color:#d6dde8}
+  .proj-card h3{color:var(--ink);font-size:17px;display:flex;align-items:center;gap:8px}
+  .proj-card h3 svg{width:16px;height:16px;stroke:var(--accent)}
+  .proj-card .meta{color:var(--muted);font-size:14px;margin-top:2px}
+  .proj-card p{margin-top:8px;font-size:15px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .tag{background:var(--accent-soft);color:var(--accent);font-size:13px;padding:3px 10px;border-radius:20px}
+
+  /* ---------- 联系 / 页脚 ---------- */
+  .contact{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:24px}
+  .contact a{display:flex;align-items:center;gap:10px;color:var(--body)}
+  .contact a:hover{color:var(--accent);text-decoration:none}
+  .contact svg{width:18px;height:18px;stroke:var(--accent);flex:0 0 auto}
+  footer{padding:30px 0 40px;text-align:center;color:var(--muted);font-size:14px}
+
+  /* ---------- 响应式 ---------- */
+  @media (min-width:640px){
+    .skills{grid-template-columns:1fr 1fr;gap:20px 32px}
+    .projects{grid-template-columns:1fr 1fr}
+    .contact{grid-template-columns:1fr 1fr}
+  }
+  @media (min-width:840px){
+    .hero{padding:84px 0 64px}
+    .hero h1{font-size:42px}
+    .hero .avatar{width:116px;height:116px;font-size:40px}
+    .timeline{margin-left:20px;padding-left:30px}
+    .tl-item::before{left:-38px}
+  }
+  @media (max-width:560px){
+    .nav-links{display:none}
+    .hero h1{font-size:28px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <span class="brand">张三<small>个人档案</small></span>
+    <ul class="nav-links">
+      <li><a href="#about">关于</a></li>
+      <li><a href="#skills">技能</a></li>
+      <li><a href="#experience">经历</a></li>
+      <li><a href="#projects">项目</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ===== Hero：请替换为你的真实信息 ===== -->
+<section class="hero" id="top">
+  <div class="container hero-grid">
+    <div class="avatar" aria-hidden="true">ZS</div>
+    <div class="hero-info">
+      <h1>张三</h1>
+      <div class="role">前端开发工程师</div>
+      <p class="tagline">热爱用代码解决问题，专注于构建简洁、可靠、对用户友好的产品。这是我的个人主页模板，欢迎替换为你的介绍。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l5 5-5 5M13 7l5 5-5 5"/></svg>
+          查看项目
+        </a>
+        <a class="btn btn-ghost" href="#contact">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6L12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          联系我
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 关于 ===== -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head"><span class="num">01</span><h2>关于我</h2></div>
+    <p class="lead">我是一名拥有 5 年经验的前端开发工程师，擅长构建现代 Web 应用与可复用的前端工程体系。曾主导多个从 0 到 1 的产品研发，关注代码质量、性能与团队协作。这里是我的个人档案，展示我的技能、经历与作品。（此段为占位介绍，请替换为你自己的话。）</p>
+  </div>
+</section>
+
+<!-- ===== 技能 ===== -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-head"><span class="num">02</span><h2>专业技能</h2></div>
+    <div class="skills">
+      <!-- 百分比仅为示意，请按你的熟练度修改 -->
+      <div class="skill-row"><span class="name">JavaScript / TypeScript</span><div class="bar"><span style="width:90%"></span></div></div>
+      <div class="skill-row"><span class="name">Vue / React</span><div class="bar"><span style="width:85%"></span></div></div>
+      <div class="skill-row"><span class="name">HTML / CSS</span><div class="bar"><span style="width:92%"></span></div></div>
+      <div class="skill-row"><span class="name">Node.js / 工程化</span><div class="bar"><span style="width:78%"></span></div></div>
+      <div class="skill-row"><span class="name">UI 设计协作</span><div class="bar"><span style="width:75%"></span></div></div>
+      <div class="skill-row"><span class="name">性能优化 / 测试</span><div class="bar"><span style="width:70%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 工作经历（时间轴） ===== -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head"><span class="num">03</span><h2>工作经历</h2></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <h3>前端开发工程师 · 某科技公司</h3>
+        <div class="meta">2022.07 — 至今 · 深圳</div>
+        <p>负责核心业务前端架构与迭代，主导组件库建设，推动团队引入 TypeScript 与自动化测试，页面性能提升 40%。</p>
+      </div>
+      <div class="tl-item">
+        <h3>前端开发实习生 · 某互联网企业</h3>
+        <div class="meta">2021.06 — 2022.06 · 广州</div>
+        <p>参与活动页与运营后台开发，独立负责多个营销 H5 的上线与维护。</p>
+      </div>
+      <div class="tl-item">
+        <h3>自由开发者 · 副业项目</h3>
+        <div class="meta">2020 — 2021</div>
+        <p>为小团队开发官网与小程序，积累跨端开发与项目交付经验。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 教育背景 ===== -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head"><span class="num">04</span><h2>教育背景</h2></div>
+    <div class="edu">
+      <div class="edu-card">
+        <h3>计算机科学与技术 · 本科</h3>
+        <div class="meta">某大学 · 2018 — 2022</div>
+      </div>
+      <div class="edu-card">
+        <h3>相关证书与培训</h3>
+        <div class="meta">专业课程、竞赛与技能认证（占位）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 代表项目 ===== -->
+<section id="projects">
+  <div class="container">
+    <div class="sec-head"><span class="num">05</span><h2>代表项目</h2></div>
+    <div class="projects">
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 A</h3>
+        <div class="meta">技术栈：Vue · Node.js</div>
+        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
+        <div class="tags"><span class="tag">前端</span><span class="tag">工程化</span></div>
+      </a>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 B</h3>
+        <div class="meta">技术栈：React · TypeScript</div>
+        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
+        <div class="tags"><span class="tag">Web</span><span class="tag">可视化</span></div>
+      </a>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 C</h3>
+        <div class="meta">技术栈：小程序</div>
+        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
+        <div class="tags"><span class="tag">跨端</span><span class="tag">产品</span></div>
+      </a>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 D</h3>
+        <div class="meta">技术栈：Node.js · 云服务</div>
+        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
+        <div class="tags"><span class="tag">后端</span><span class="tag">运维</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 联系 / 页脚 ===== -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head"><span class="num">06</span><h2>联系我</h2></div>
+    <div class="contact">
+      <a href="mailto:you@example.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6L12 13 2 6"/></svg>
+        you@example.com
+      </a>
+      <a href="#top" onclick="event.preventDefault();">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l3-3 3 3M12 9v6"/></svg>
+        定位：城市（占位）
+      </a>
+      <a href="https://github.com/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub 主页
+      </a>
+      <a href="mailto:you@example.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +86 138-0000-0000（占位）
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2026 张三 · 个人档案 · 由 GitHub Pages 提供
+  </div>
+</footer>
+
+</body>
+</html>
