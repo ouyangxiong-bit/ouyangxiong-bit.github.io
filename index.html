@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="个人档案主页：展示个人信息、技能、工作经历、教育背景与代表项目。">
-<title>张三 · 个人档案</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232255CE'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' fill='%23fff' text-anchor='middle' font-weight='bold'%3EZS%3C/text%3E%3C/svg%3E">
+<meta name="description" content="阳雄的个人档案主页：16年软件开发经验，深耕电力行业信息化与城际出行平台，Java 后端与分布式系统方向。">
+<title>阳雄 · 个人档案</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232255CE'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' fill='%23fff' text-anchor='middle' font-weight='bold'%3EYX%3C/text%3E%3C/svg%3E">
 <style>
   :root{
     --ink:#16202E;
@@ -80,11 +80,11 @@
   .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:28px}
   .sec-head .num{color:var(--accent);font-weight:700;font-size:15px}
   .sec-head h2{color:var(--ink);font-size:24px;letter-spacing:.3px}
-  .lead{max-width:720px}
+  .lead{max-width:760px}
 
   /* ---------- 技能 ---------- */
   .skills{display:grid;grid-template-columns:1fr;gap:14px}
-  .skill-row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+  .skill-row{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center}
   .skill-row .name{color:var(--ink);font-weight:600;font-size:15px}
   .bar{height:8px;border-radius:5px;background:var(--accent-soft);overflow:hidden}
   .bar>span{display:block;height:100%;background:var(--accent);border-radius:5px}
@@ -133,7 +133,7 @@
 
   /* ---------- 响应式 ---------- */
   @media (min-width:640px){
-    .skills{grid-template-columns:1fr 1fr;gap:20px 32px}
+    .skills{grid-template-columns:1fr 1fr;gap:20px 40px}
     .projects{grid-template-columns:1fr 1fr}
     .contact{grid-template-columns:1fr 1fr}
   }
@@ -157,7 +157,7 @@
 
 <header class="nav">
   <div class="container nav-inner">
-    <span class="brand">张三<small>个人档案</small></span>
+    <span class="brand">阳雄<small>个人档案</small></span>
     <ul class="nav-links">
       <li><a href="#about">关于</a></li>
       <li><a href="#skills">技能</a></li>
@@ -168,14 +168,14 @@
   </div>
 </header>
 
-<!-- ===== Hero：请替换为你的真实信息 ===== -->
+<!-- ===== Hero ===== -->
 <section class="hero" id="top">
   <div class="container hero-grid">
-    <div class="avatar" aria-hidden="true">ZS</div>
+    <div class="avatar" aria-hidden="true">YX</div>
     <div class="hero-info">
-      <h1>张三</h1>
-      <div class="role">前端开发工程师</div>
-      <p class="tagline">热爱用代码解决问题，专注于构建简洁、可靠、对用户友好的产品。这是我的个人主页模板，欢迎替换为你的介绍。</p>
+      <h1>阳雄</h1>
+      <div class="role">Java 软件工程师 · 16 年经验</div>
+      <p class="tagline">深耕电力行业信息化系统与城际出行平台，熟悉 dubbo 分布式服务框架、分布式集群部署与高并发接口优化，具备微信公众号开发经验。</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#projects">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l5 5-5 5M13 7l5 5-5 5"/></svg>
@@ -194,7 +194,7 @@
 <section id="about">
   <div class="container">
     <div class="sec-head"><span class="num">01</span><h2>关于我</h2></div>
-    <p class="lead">我是一名拥有 5 年经验的前端开发工程师，擅长构建现代 Web 应用与可复用的前端工程体系。曾主导多个从 0 到 1 的产品研发，关注代码质量、性能与团队协作。这里是我的个人档案，展示我的技能、经历与作品。（此段为占位介绍，请替换为你自己的话。）</p>
+    <p class="lead">16 年软件开发经验，先后服务于电力行业与出行领域。参与中国大唐集团全面计划管理、电量监控、投资管理、新能源工程管理等核心系统建设，深谙电力管理部门业务流程；担任城际出行项目研发组长，主导分布式后台与微信公众号开发。熟悉 dubbo 分布式框架、分布式集群部署与高并发接口优化，具备独立分析解决问题的能力。工作认真负责，乐于沟通分享，具备良好的学习与团队协作能力。</p>
   </div>
 </section>
 
@@ -203,13 +203,15 @@
   <div class="container">
     <div class="sec-head"><span class="num">02</span><h2>专业技能</h2></div>
     <div class="skills">
-      <!-- 百分比仅为示意，请按你的熟练度修改 -->
-      <div class="skill-row"><span class="name">JavaScript / TypeScript</span><div class="bar"><span style="width:90%"></span></div></div>
-      <div class="skill-row"><span class="name">Vue / React</span><div class="bar"><span style="width:85%"></span></div></div>
-      <div class="skill-row"><span class="name">HTML / CSS</span><div class="bar"><span style="width:92%"></span></div></div>
-      <div class="skill-row"><span class="name">Node.js / 工程化</span><div class="bar"><span style="width:78%"></span></div></div>
-      <div class="skill-row"><span class="name">UI 设计协作</span><div class="bar"><span style="width:75%"></span></div></div>
-      <div class="skill-row"><span class="name">性能优化 / 测试</span><div class="bar"><span style="width:70%"></span></div></div>
+      <!-- 熟练度条为可视化示意，对应简历中的 熟练/良好 -->
+      <div class="skill-row"><span class="name">Java</span><div class="bar"><span style="width:92%"></span></div></div>
+      <div class="skill-row"><span class="name">Oracle / SQL Server / MySQL</span><div class="bar"><span style="width:90%"></span></div></div>
+      <div class="skill-row"><span class="name">Spring / SSH / SSM</span><div class="bar"><span style="width:88%"></span></div></div>
+      <div class="skill-row"><span class="name">dubbo 分布式服务框架</span><div class="bar"><span style="width:86%"></span></div></div>
+      <div class="skill-row"><span class="name">C#/.NET / Silverlight</span><div class="bar"><span style="width:82%"></span></div></div>
+      <div class="skill-row"><span class="name">JavaScript / Vue.js / jQuery</span><div class="bar"><span style="width:84%"></span></div></div>
+      <div class="skill-row"><span class="name">Redis / MongoDB / 消息队列</span><div class="bar"><span style="width:76%"></span></div></div>
+      <div class="skill-row"><span class="name">微信公众号开发</span><div class="bar"><span style="width:85%"></span></div></div>
     </div>
   </div>
 </section>
@@ -220,19 +222,19 @@
     <div class="sec-head"><span class="num">03</span><h2>工作经历</h2></div>
     <div class="timeline">
       <div class="tl-item">
-        <h3>前端开发工程师 · 某科技公司</h3>
-        <div class="meta">2022.07 — 至今 · 深圳</div>
-        <p>负责核心业务前端架构与迭代，主导组件库建设，推动团队引入 TypeScript 与自动化测试，页面性能提升 40%。</p>
+        <h3>软件工程师 · 湖南大唐先一科技有限公司</h3>
+        <div class="meta">2010.04 — 至今 · 长沙 · 国企 · 500-1000 人</div>
+        <p>参与中国大唐集团公司全面计划管理系统、电量监控系统、投资管理系统、新能源工程管理信息平台、湖南经信委信息在线监测与分析系统等项目，负责需求 / 概要 / 详细设计文档编写、系统设计、功能模块开发、调试与后期维护。</p>
       </div>
       <div class="tl-item">
-        <h3>前端开发实习生 · 某互联网企业</h3>
-        <div class="meta">2021.06 — 2022.06 · 广州</div>
-        <p>参与活动页与运营后台开发，独立负责多个营销 H5 的上线与维护。</p>
+        <h3>软件工程师（出行项目研发组长）· 湖南易通科技有限公司</h3>
+        <div class="meta">2017.03 — 2018.04 · 长沙 · 民营 · 50-150 人</div>
+        <p>担任城际跨市区打车软件研发组长，负责分布式后台研发、微信公众号研发、系统与数据库设计、高并发接口优化、接口降流限压与访问安全、支付平台开发，以及 dubbo + zookeeper + redis 分布式服务集群的搭建、优化与部署。</p>
       </div>
       <div class="tl-item">
-        <h3>自由开发者 · 副业项目</h3>
-        <div class="meta">2020 — 2021</div>
-        <p>为小团队开发官网与小程序，积累跨端开发与项目交付经验。</p>
+        <h3>软件工程师 · 湖南新空间系统技术有限公司</h3>
+        <div class="meta">2009.04 — 2010.03 · 民营</div>
+        <p>参与公司各项目功能模块的开发。</p>
       </div>
     </div>
   </div>
@@ -244,12 +246,16 @@
     <div class="sec-head"><span class="num">04</span><h2>教育背景</h2></div>
     <div class="edu">
       <div class="edu-card">
-        <h3>计算机科学与技术 · 本科</h3>
-        <div class="meta">某大学 · 2018 — 2022</div>
+        <h3>湖南农业大学 · 经济信息管理</h3>
+        <div class="meta">本科 · 2010 — 2013</div>
       </div>
       <div class="edu-card">
-        <h3>相关证书与培训</h3>
-        <div class="meta">专业课程、竞赛与技能认证（占位）</div>
+        <h3>长沙理工大学 · 软件工程</h3>
+        <div class="meta">大专 · 2006 — 2009</div>
+      </div>
+      <div class="edu-card">
+        <h3>专业证书</h3>
+        <div class="meta">高级程序员（2009）</div>
       </div>
     </div>
   </div>
@@ -260,29 +266,41 @@
   <div class="container">
     <div class="sec-head"><span class="num">05</span><h2>代表项目</h2></div>
     <div class="projects">
-      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 A</h3>
-        <div class="meta">技术栈：Vue · Node.js</div>
-        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
-        <div class="tags"><span class="tag">前端</span><span class="tag">工程化</span></div>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>燃料业务统一管控平台</h3>
+        <div class="meta">2020.12 — 至今 · 中国大唐集团公司</div>
+        <p>前后端分离架构，前端 React、后端 Spring Boot，数据库 Oracle + DM + MySQL。</p>
+        <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">React</span></div>
       </a>
-      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 B</h3>
-        <div class="meta">技术栈：React · TypeScript</div>
-        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
-        <div class="tags"><span class="tag">Web</span><span class="tag">可视化</span></div>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>燃料调度中心</h3>
+        <div class="meta">2018.04 — 2020.11 · 中国大唐集团公司</div>
+        <p>Java + SSH 框架开发，集成 Shiro 权限管理与 Activiti 工作流，前端 jQueryUI。</p>
+        <div class="tags"><span class="tag">Java</span><span class="tag">SSH</span><span class="tag">Shiro</span></div>
       </a>
-      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 C</h3>
-        <div class="meta">技术栈：小程序</div>
-        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
-        <div class="tags"><span class="tag">跨端</span><span class="tag">产品</span></div>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>城际快线 · 快客出行（打车软件）</h3>
+        <div class="meta">2017.03 — 2017.09 · 湖南易通科技</div>
+        <p>dubbo 分布式服务框架 + zookeeper 集群 + redis 主从缓存 + activemq，含乘客端、司机端与后台管理；快客出行微信公众号由本人独立开发完成。</p>
+        <div class="tags"><span class="tag">Dubbo</span><span class="tag">Redis</span><span class="tag">公众号</span></div>
       </a>
-      <a class="proj-card" href="#" onclick="event.preventDefault();alert('请在编辑时替换为你的项目链接')">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>项目 D</h3>
-        <div class="meta">技术栈：Node.js · 云服务</div>
-        <p>项目简介占位：一句话描述项目解决的问题与你的贡献。</p>
-        <div class="tags"><span class="tag">后端</span><span class="tag">运维</span></div>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>全面计划管理系统</h3>
+        <div class="meta">2015.05 — 2017.02 · 中国大唐集团公司</div>
+        <p>覆盖集团公司 13 个部门日常计划业务，支持计划上报、下达、分解与调整全流程。</p>
+        <div class="tags"><span class="tag">Java</span><span class="tag">SSH</span><span class="tag">工作流</span></div>
+      </a>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>汽车 CRM 管理系统</h3>
+        <div class="meta">2015.01 — 2015.05</div>
+        <p>汽车销售、推管与客户资料收集系统，spring + spring mvc + mongodb + mysql，webapp 与原生 App 通过注册服务调用后端接口。</p>
+        <div class="tags"><span class="tag">Spring MVC</span><span class="tag">MongoDB</span><span class="tag">MySQL</span></div>
+      </a>
+      <a class="proj-card" href="#" onclick="event.preventDefault();alert('可在编辑时替换为项目链接')">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>发电量监控系统（全国各省）</h3>
+        <div class="meta">2014.01 — 2015.01 · 中国大唐集团公司</div>
+        <p>实时数据库采集与手工填报结合，自动汇集各电厂每日电量生成报表，并提供发电告警与图表展示。</p>
+        <div class="tags"><span class="tag">数据采集</span><span class="tag">报表</span><span class="tag">告警</span></div>
       </a>
     </div>
   </div>
@@ -293,21 +311,21 @@
   <div class="container">
     <div class="sec-head"><span class="num">06</span><h2>联系我</h2></div>
     <div class="contact">
-      <a href="mailto:you@example.com">
+      <a href="mailto:service****@163.com">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6L12 13 2 6"/></svg>
-        you@example.com
+        service****@163.com
       </a>
       <a href="#top" onclick="event.preventDefault();">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l3-3 3 3M12 9v6"/></svg>
-        定位：城市（占位）
+        湖南 · 长沙
       </a>
-      <a href="https://github.com/" target="_blank" rel="noopener">
+      <a href="https://github.com/ouyangxiong-bit" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
         GitHub 主页
       </a>
-      <a href="mailto:you@example.com">
+      <a href="#top" onclick="event.preventDefault();">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        +86 138-0000-0000（占位）
+        177****2880
       </a>
     </div>
   </div>
@@ -315,7 +333,7 @@
 
 <footer>
   <div class="container">
-    © 2026 张三 · 个人档案 · 由 GitHub Pages 提供
+    © 2026 阳雄 · 个人档案 · 由 GitHub Pages 提供
   </div>
 </footer>
 
