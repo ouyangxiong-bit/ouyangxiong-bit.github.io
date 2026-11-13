@@ -57,6 +57,8 @@
   - **要"跟老系统长得一样"，先去老系统里挖原图，不要重画。** 本次客户端顶栏要对齐 2019 版 WinForms，图标就在 `* .resources` 里（BinaryFormatter 包装的 `System.Drawing.Bitmap`）。用 Python 解析 .resources 头→名称表→数据区，在每个 blob 里找 PNG/BMP 魔数截取即可拿到原始 32×32 图标；同时**照抄原 `GetImg` 的判定顺序**（先按 form 精确匹配、再按菜单名兜底），否则图标会张冠李戴。
   - **改 UI 必须截真实运行态来验收，不能凭聊天里的截图猜。** 先把"改之前"截一张，改完再截一张对比。注意 Electron **隐藏窗口的纯样式变更不刷新合成层**，`capturePage()` 会拿到旧帧（改前改后 md5 完全一样，很容易误判成"没生效"），要先 `showInactive()` 再截。判断选中态优先用 `getComputedStyle` 取背景/边框色，比肉眼看图可靠。
   - 定位"菜单项/顺序不对"这类问题，先查数据库里的菜单表（本次 `system_resources` 的 `resources_priority`），再怀疑前端；本次查明菜单项本来就一致，差异纯粹是视觉，避免了大改数据。
+  - **改共享组件样式前，先 `grep -rln "<class名>" src/` 摸清波及面**，并顺手查有没有"组件内 scoped 副本 + 全局一份"的双份定义——本次发现某个视图里躺着 78 行与全局重复、尺寸还过时的样式，一直靠 scoped 优先级盖着，只改全局不会生效。
+  - **原版里"只有图标没有文字"的按钮要单独识别**（WinForms 是 `DisplayStyle = Image`），不能一律套"图标在上文字在下"；按钮**顺序**照抄原 `Items.AddRange`，别按自己的逻辑重排。
 - **常用工具**：GitHub（个人主页与档案托管）、豆包 / Doubao Work（日常 AI 助手）、Eclipse / IDEA + Maven、SVN / Git、Oracle / MySQL / SQL Server、dubbo / zookeeper / redis、微信公众号生态
 - **个人兴趣**：爬山、打篮球；湖南方言（益阳话、常德话等）；历史与泛文化；关注职业技能竞赛（移动应用开发方向）
 
