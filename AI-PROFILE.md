@@ -59,6 +59,12 @@
   - 定位"菜单项/顺序不对"这类问题，先查数据库里的菜单表（本次 `system_resources` 的 `resources_priority`），再怀疑前端；本次查明菜单项本来就一致，差异纯粹是视觉，避免了大改数据。
   - **改共享组件样式前，先 `grep -rln "<class名>" src/` 摸清波及面**，并顺手查有没有"组件内 scoped 副本 + 全局一份"的双份定义——本次发现某个视图里躺着 78 行与全局重复、尺寸还过时的样式，一直靠 scoped 优先级盖着，只改全局不会生效。
   - **原版里"只有图标没有文字"的按钮要单独识别**（WinForms 是 `DisplayStyle = Image`），不能一律套"图标在上文字在下"；按钮**顺序**照抄原 `Items.AddRange`，别按自己的逻辑重排。
+- **桌面客户端发版 / 自更新类（已验证的做法）**：
+  - 自动更新优先 `electron-updater` + **静态文件源**（`publish.provider=generic`），服务端只要一个 nginx 目录放 `latest.yml` + `setup.exe` + `.blockmap`，不必写接口。
+  - **"强制更新"不能用 `latest.yml` 表达**（它不支持自定义字段），要单独放 `min-version.json`，客户端比版本号决定是否只给「立即更新」。而且读取失败必须**按非强制处理**，否则断网就把店铺锁死。
+  - 安装包文件名用**纯 ASCII**（`artifactName: xxx-${version}-setup.${ext}`），中文安装包名在 URL 编码、命令行工具上反复出问题。
+  - 国内网络打包两处必配：`electronDist: node_modules/electron/dist`（省掉去 GitHub 拉 electron zip）、`ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/`（NSIS/winCodeSign）。
+  - 上线顺序有个硬前提：**老版本没有更新代码，永远不会自己升**，必须先让现场手工装一次带 updater 的新版，之后才形成闭环。
 - **常用工具**：GitHub（个人主页与档案托管）、豆包 / Doubao Work（日常 AI 助手）、Eclipse / IDEA + Maven、SVN / Git、Oracle / MySQL / SQL Server、dubbo / zookeeper / redis、微信公众号生态
 - **个人兴趣**：爬山、打篮球；湖南方言（益阳话、常德话等）；历史与泛文化；关注职业技能竞赛（移动应用开发方向）
 
