@@ -93,7 +93,7 @@
     **验收别看日志说"没警告"就收工**：把 `build/icon.ico` 里 256 帧的 PNG 字节拿去 `Buffer.includes` 比对 exe 和安装包，命中才算真打进去。另外小尺寸要单独验：把 16/32/48 拼成放大对照图看，第一版"面包+鱼"细节太多，16px 直接糊成一团，改成"一个鱼形面包剪影"才立得住。
   - **「装了更新还是提示更新」几乎一定是 `latest.yml` 的 version 和安装包不一致（2026-11-14 验证）**：现场报"每次提示下载 v0.1.4、点了立即更新并重启，重启后又提示"。拉服务端 `latest.yml` 一看：`version: 0.1.4` 但 `files[0].url` 是 `yuermama-mbgl-0.1.2-setup.exe`，本机 `ProductVersion` 仍是 `0.1.2` —— 有人手改了 yml 的版本号却没重打包。`electron-updater` 只拿 `latest.yml.version` 跟 `app.getVersion()` 比大小，于是「判定有新版本 → 下载 0.1.2 → 装完还是 0.1.2 → 再判定有新版本」永动循环。
     修法是让四者一致：`package.json` version、安装包文件名、`latest.yml` 的 sha512、exe 的 `ProductVersion`；验收分别用 `crypto.sha512` 比对、asar 里查版本串与入口 js 的 hash、`(Get-Item exe).VersionInfo.ProductVersion`。
-    **发布纪律**：`latest.yml` 只能由构建生成、和 setup 一起上传，永远不要手改版本号去"催"客户端升级。客户端侧也应加兜底：按版本记录安装次数，同一版本装 N 次仍升不上去就停手并明确报错，而不是一直弹更新框（本次实现：`autoDownload=false` 自己接管下载 + electron-store 记账 + 停轮询）。
+    **发布纪律**：`latest.yml` 只能由构建生成、和 setup 一起上传，永远不要手改版本号去"催"客户端升级。客户端侧也应加兜底：按版本记录安装次数，同一版本装 N 次仍升不上去就停手并明确报错，而不是一直弹更新框（本次实现：`autoDownload=false` 自己接管下载 + electron-store 记账 + 停轮询）。另外要静默安装就传 `quitAndInstall(true, true)`（`isSilent=true` 时 NSIS 不再弹「选择安装位置/下一步」），但**这个开关由「当前正在运行的那个版本」决定** —— 老版本升上来的那一次仍会弹向导，只有装到新版本之后的下一次更新才全自动，别把「这次升级还弹向导」当成没改对。
   - **沙箱里 electron-builder 原地重打会被批量删除守卫拦住**：报 `SAFE_DELETE_BULK_CONFIRM_REQUIRED`（一次清 64 个 locales 文件，超过阈值 50）。第一次打包到新目录能过，第二次覆盖就挂 —— 换个全新的 `directories.output` 目录即可，不必去争权限。
 - **桌面客户端发版 / 自更新类（已验证的做法）**：
   - 自动更新优先 `electron-updater` + **静态文件源**（`publish.provider=generic`），服务端只要一个 nginx 目录放 `latest.yml` + `setup.exe` + `.blockmap`，不必写接口。
