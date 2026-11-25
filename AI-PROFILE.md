@@ -103,6 +103,12 @@
     **发布纪律**：`latest.yml` 只能由构建生成、和 setup 一起上传，永远不要手改版本号去"催"客户端升级。客户端侧也应加兜底：按版本记录安装次数，同一版本装 N 次仍升不上去就停手并明确报错，而不是一直弹更新框（本次实现：`autoDownload=false` 自己接管下载 + electron-store 记账 + 停轮询）。另外要静默安装就传 `quitAndInstall(true, true)`（`isSilent=true` 时 NSIS 不再弹「选择安装位置/下一步」），但**这个开关由「当前正在运行的那个版本」决定** —— 老版本升上来的那一次仍会弹向导，只有装到新版本之后的下一次更新才全自动，别把「这次升级还弹向导」当成没改对。
   - **沙箱里 electron-builder 原地重打会被批量删除守卫拦住**：报 `SAFE_DELETE_BULK_CONFIRM_REQUIRED`（一次清 64 个 locales 文件，超过阈值 50）。第一次打包到新目录能过，第二次覆盖就挂 —— 换个全新的 `directories.output` 目录即可，不必去争权限。
   - **Windows 上报 `app.asar` 被占用（EBUSY），先查是谁 mmap 了它，别循着"关掉自己程序"的提示瞎试（2026-11-17 验证）**：预检脚本给的是"关掉刚打包的程序 / 重启电脑 / 换个输出目录"，实测那个程序根本没在跑、Defender 实时防护也是关的；用 Sysinternals `handle64.exe -nobanner "<路径关键词>"` 一次就定位到持有者是 **VS Code 与 AI 客户端这两个 Electron 宿主** —— 它们把工作区里的 `.asar` 内存映射住了，句柄属性显示 `(RW-)`（共享读、共享写、不共享 DELETE），所以现象是"能读、能写、唯独改名报 EBUSY"。处理：`handle64.exe -c <句柄> -p <PID> -y` 摘掉即可，不必重启；根治是在项目 `.vscode/settings.json` 里把 `**/release/**`、`**/release-*/**` 同时排除出 `files.watcherExclude` 与 `search.exclude`。**判据：EBUSY/EACCES 这种"能读不能改名"的锁，优先怀疑内存映射而不是权限。**
+  - **反推口令哈希算法时，先读源码确认公式里到底拼了什么，不要凭"常见写法"穷举字典（2026-11-25 验证）。** 鱼儿妈妈客户端要兼容 BS 端（若依 RuoYi）账号登录，我按 `MD5(明文+salt)` 实现，结果库里那行 `29c67a30398638269fe600f73a054934` 用任何常见口令都反推不出来，于是误判成"明文是某个非常规值"。翻 `SysPasswordService#encryptPassword` 才看到真实公式是 **`Md5Utils.hash(loginName + password + salt)`** —— **登录名本身参与加盐**。代入 `md5('admin'+'admin123'+'111111')` 一次命中，也正好等于若依初始化脚本里的 admin 记录，说明现场库就是原始初始化数据、口令从未改过（`README.md` 里写的 `admin/admin123` 是对的）。
+    **可复用的判据**：① 反向验证要拿"库里的哈希 + 官方初始化脚本的默认口令"做对照，命中就同时证明了算法和"没人改过口令"两件事；② 比对哈希时注意 hex 大小写（`Md5Utils.toHex` 是逐字节 `Long.toString(v,16)` 补零，全小写）与字符集（`getBytes("UTF-8")`，不是 `Encoding.Default`）；
+    ③ 同类坑还有 jeecg 版 `MD5(明文 + "{" + salt + "}")`，两套算法长得不像，现场库又常常是"若依的 sys_user + jeecg 的 sys_permission"混装，所以校验侧要**两套都试**，而写入口令时必须**按表那一套算**，写错了人在 BS 端就登不上。
+  - **登录自检脚本自己会把防爆破锁撞满，导致后续所有断言连环失败（2026-11-25 验证）。** 冷却计数是从 `mbgl_login_log` 里"近 15 分钟失败行"算的（设计如此，重启不清零），而自检脚本本身就故意制造十几次失败；连跑两轮就把**设备级 20 次**阈值顶满，之后连正确口令的用例也一起被 `密码错误次数过多，请 30 秒后再试` 挡掉，表现成"一片 FAIL、看着像代码坏了"。判据：冷却是 30→60→120 秒递增的，出现这种递增就说明是设备级计数而不是业务逻辑问题。处理：跑前先 `DELETE FROM mbgl_login_log WHERE result=0 AND created_at >= NOW() - INTERVAL 30 MINUTE` 清掉自检自己写进去的失败行，或在脚本里换设备指纹。
+
+
 - **桌面客户端发版 / 自更新类（已验证的做法）**：
   - 自动更新优先 `electron-updater` + **静态文件源**（`publish.provider=generic`），服务端只要一个 nginx 目录放 `latest.yml` + `setup.exe` + `.blockmap`，不必写接口。
   - **"强制更新"不能用 `latest.yml` 表达**（它不支持自定义字段），要单独放 `min-version.json`，客户端比版本号决定是否只给「立即更新」。而且读取失败必须**按非强制处理**，否则断网就把店铺锁死。
