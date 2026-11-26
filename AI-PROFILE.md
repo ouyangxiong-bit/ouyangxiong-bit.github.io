@@ -115,6 +115,12 @@
   ② **必须本地白名单收敛，不能依赖服务端报错**。实测传非法 `order_type=finished` 不报错，返回条数等于没筛 —— 用户以为在筛、其实拿的是全量，是最坏的一种错。做法：`Set.of(...)` 校验，非法值直接丢弃不下发；间隔型枚举（`group_type` 0/1、`is_wei_order` 0/1/2）同理。
   ③ **带筛选的同步默认不能推进增量水位**。水位（`last_sync_time`）语义是 update_time，只拉「待发货」却把水位推到现在，其余状态就永久漏了。判据写成一行可执行的：`advancesWaterLevel = !backfill && !byAddTime && filter.isEmpty()`，且不推进时必须在返回文案里明说「本轮未推进增量水位」并复述条件，否则用户下次同步会莫名少数据。
   另外两个细节：官方写着上限 50 的 `page_size` 是**静默截断**（传 51 实得 50），前端下拉就别给 51；Spring 里 `@RequestBody` 与 `@RequestParam` 可以并存（body 优先、query 补齐），老调用方式因此不用改客户端就还能用。
+- **「数字对不上」先分清是「丢精度」还是「口径错」，两者经常同时存在（2026-11-26 验证，微店 62.04→62.00）**：
+  ① **先查列类型再读代码**。`decimal(10,0)` 存不下小数，MySQL 会**静默四舍五入 + 一条 warning**，不报错；再叠加服务层 `setScale(0, HALF_UP)`，就是两层一起抹。只改一层都无效：改代码不改列 → 库里再舍一次；改列不改代码 → 代码已经先舍了。
+  ② **小数点丢了往往还藏着口径错**。这次修完 62.04 才发现界面上「商品合计 62 + 运费 5 = 实付 62」本来就自相矛盾 —— 同步把「含运费的订单总额」塞进了「商品小计」字段，运费被算两次。**判据：任何界面同时展示「小计 + 运费」和「应付」时，必须能用一条公式对上，对不上就是口径错，跟精度无关。**
+  ③ **修之前先找「原始值还在不在」**。这次微店原值完整躺在 `wd_*` 列（当初建列时就是 2 位），所以 1326 单可以无损回填、不用重拉接口。**先确认能不能无损回填，再决定要不要重放数据**。
+  ④ **改列精度后必须连 UI 输入校验一起改**。商品弹窗原本「只收整数」正是为 `decimal(10,0)` 写的，列改了却不改校验，13.80 的商品在界面上根本改不动。
+  ⑤ 验证要写成可执行断言：`Σ小计 + Σ运费 - Σ折扣 = Σ实付`，以及 `单价 × 数量 = 金额`（后者逼出"单价该用折后价还是原价"这个真问题）。
 
 - **桌面客户端发版 / 自更新类（已验证的做法）**：
   - 自动更新优先 `electron-updater` + **静态文件源**（`publish.provider=generic`），服务端只要一个 nginx 目录放 `latest.yml` + `setup.exe` + `.blockmap`，不必写接口。
@@ -137,6 +143,7 @@
   - **鱼儿妈妈微店订单同步（2026-11-26）**：`ruoyi-admin` 已接通微店官方解密 SDK，订单收货人姓名/电话/地址与会员电话/地址解密后落本地明文，`wd_*` 列保留密文；实测 688 单 / 761 会员通过，本地 64153 单、307770 明细未受影响。同日把 `com.ruoyi.weidian` 全套（client/config/crypto/domain/mapper/service/task）迁到 `ruoyi-system` 的 `com.ruoyi.system.weidian`，XML 落 `ruoyi-system/src/main/resources/mapper/weidian/`，Controller 留 admin；SDK 在 system（编译）与 admin（`includeSystemScope` 打包）各声明一次；`com.ruoyi.system.weidian.task` 补进 `JOB_WHITELIST_STR`；打包/启动/`state`/`syncRange`（269 单幂等跳过）/`PUT /monitor/job` 编辑 job 100 全部验证通过。水位表为空 → 首次运行会按 `backfillDays`（31 天）回溯并受 `maxDetailCount=500` 截断，建议先手动跑一次建水位。
 - **鱼儿妈妈订单查询改造（2026-11-26，Electron 客户端）**：用户报「查询条件失效查不出数据」，实测根因是默认时间条件写的是「发货时间＝本月」——库里 6 条待发货单 `senddate` 全为 NULL，选「订单状态=待发货」永远 0 条。改成时间默认不限 + 「今日/近7日/近30日/本月/全部时间」快捷 + 「清空条件」，四个下拉补显式「全部」；列上去掉积分/寄件日期/供应商名称、末列 `小计`→`合计`（`fixed:'right'`），分页栏新增全量合计（`OrderPageResult.sumTotal`，后端 `COUNT+SUM` 一条 SQL）。顺带把查询从 2736ms 压到 29ms（全场景 ≤450ms）：去掉 orderouput 派生表（改标量子查询，避免优化器放弃索引顺序）、去掉 `order by id desc, senddate desc` 的多余第二排序键、宽列清单改「先查主键再回表」两步、会员/商品条件改子查询（取一页用 `EXISTS`、数总数用 `IN`）；新增 `scripts/sql/order-query-indexes.sql`（orderdate / wd_pay_time / wd_finish_time 三个索引，幂等，本地已执行，**服务器需手工跑一次**）。
 - **鱼儿妈妈微店同步·接口参数全开放（2026-11-26）**：把 `vdian.order.list.get` 的可选入参全部做成 BS 端可选条件（时间基准 update/add、`order_type` 六值、`group_type`、`order_biz_type`、`is_wei_order`、`page_size`、详情上限、跳过未变更、回溯开关），接口调用全部写在 RuoYi 后端（`OrderSyncOptions` + `WeidianOrderSyncService#buildFilter`），Electron 端未动。`page_num` / `use_has_more` / `after_key` 三个刻意不开放（游标分页自维护）；`advancesWaterLevel = !backfill && !byAddTime && filter.isEmpty()` —— 带筛选或按创建时间同步一律不推进水位，否则其余状态订单会永久漏掉。
+- **鱼儿妈妈金额精度修正（2026-11-26）**：微店 13.80/18.40/11.04 → 本地 14/18/11，根因是 `decimal(10,0)` 列 + 服务层 `setScale(0)` 两层叠加；顺带查出 `o_total` 塞了含运费总额、与本地「商品小计」口径冲突（界面出现 62+5 却实付 62）。已把 5 张表 21 列扩到 `decimal(10,2)`、回填 1326 单 / 4724 明细（无损，微店原值一直在 `wd_*` 列）、Java 去取整 + `o_total` 改回商品小计、商品弹窗放开 2 位小数。MySQL 5.7 改列只能 COPY，5 张表合计 33 秒。
 - **近期目标**：完善个人主页与档案内容；持续迭代燃料业务统一管控平台；推进《失衡》剩余分集（ep07–ep12）；落地友联网的会员等级 / 通道 / 培训准证体系，以及捐赠资金的"对外隔离·对内联动"改造。
 - **近期任务（随进度更新）**：
   - [ ] 为个人主页补充真实项目链接
